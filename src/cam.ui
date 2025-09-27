@@ -22,9 +22,9 @@ background-color: rgb(9, 9, 9);</string>
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>80</y>
+      <y>110</y>
       <width>101</width>
-      <height>31</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -38,28 +38,6 @@ color: rgb(22, 37, 63);</string>
     </property>
     <property name="text">
      <string>刷新</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="closebtn">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>140</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(195, 188, 230);
-color: rgb(22, 37, 63);</string>
-    </property>
-    <property name="text">
-     <string>2</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget" native="true">
@@ -125,7 +103,7 @@ border-radius:40px;</string>
       <x>670</x>
       <y>20</y>
       <width>101</width>
-      <height>41</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">

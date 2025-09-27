@@ -19,7 +19,6 @@ public slots:
 private slots:
 
     void save_pic(int id, const QImage &preview);
-    void on_closebtn_clicked();
 
     void on_screenshotbtn_clicked();
 
@@ -35,6 +34,6 @@ private:
     QCameraImageCapture *cp;       // 抓拍部件
     QVideoWidget *w;
 
-    int m_index = 0;
+    int default_index = 1;
     int maxIndex;
 };
