@@ -34,6 +34,6 @@ private:
     QCameraImageCapture *cp;       // 抓拍部件
     QVideoWidget *w;
 
-    int default_index = 1;
+    int default_index = 0;
     int maxIndex;
 };
