@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "qt",
+            "includePath": [
+                "D:/Qt/5.15.2/mingw81_64/include/**",
+                "${workspaceRoot}/**"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
