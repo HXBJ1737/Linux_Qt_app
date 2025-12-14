@@ -10,7 +10,7 @@ scr_6inch
 
 编译方法
 
-```
+```shell
 qmake app2025.pro
 
 make
