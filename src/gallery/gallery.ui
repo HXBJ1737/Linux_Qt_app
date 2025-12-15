@@ -35,10 +35,10 @@ color: rgb(255, 255, 255);</string>
    <widget class="QPushButton" name="backBtn">
     <property name="geometry">
      <rect>
-      <x>1150</x>
+      <x>1140</x>
       <y>30</y>
-      <width>100</width>
-      <height>70</height>
+      <width>121</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="font">
@@ -73,10 +73,10 @@ border-radius: 20px;</string>
    <widget class="QPushButton" name="lastBtn">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>39</x>
       <y>330</y>
-      <width>70</width>
-      <height>80</height>
+      <width>80</width>
+      <height>150</height>
      </rect>
     </property>
     <property name="font">
@@ -96,10 +96,10 @@ border-radius: 20px;</string>
    <widget class="QPushButton" name="nextBtn">
     <property name="geometry">
      <rect>
-      <x>1170</x>
+      <x>1150</x>
       <y>330</y>
-      <width>70</width>
-      <height>80</height>
+      <width>80</width>
+      <height>150</height>
      </rect>
     </property>
     <property name="font">
@@ -119,10 +119,10 @@ border-radius: 20px;</string>
    <widget class="QPushButton" name="rm_Btn">
     <property name="geometry">
      <rect>
-      <x>1150</x>
+      <x>1140</x>
       <y>140</y>
-      <width>100</width>
-      <height>70</height>
+      <width>121</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="font">
@@ -137,6 +137,35 @@ border-radius: 20px;</string>
     </property>
     <property name="text">
      <string>删除</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton">
+    <property name="geometry">
+     <rect>
+      <x>1140</x>
+      <y>540</y>
+      <width>121</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(115, 176, 174);
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+    </property>
+    <property name="text">
+     <string>显示信息</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
     </property>
    </widget>
   </widget>

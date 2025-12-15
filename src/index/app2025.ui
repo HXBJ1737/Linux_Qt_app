@@ -104,7 +104,7 @@ border-radius: 10px;</string>
    <widget class="QPushButton" name="close_btn">
     <property name="geometry">
      <rect>
-      <x>500</x>
+      <x>1130</x>
       <y>60</y>
       <width>100</width>
       <height>100</height>

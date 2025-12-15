@@ -96,7 +96,7 @@ border-radius: 50px;</string>
     <property name="geometry">
      <rect>
       <x>1140</x>
-      <y>190</y>
+      <y>330</y>
       <width>100</width>
       <height>100</height>
      </rect>
@@ -151,6 +151,54 @@ border-radius: 50px;
       <width>240</width>
       <height>180</height>
      </size>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>50</y>
+      <width>141</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <item>
+     <property name="text">
+      <string>2592 x 1944</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>960 x 720</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>640 x 480</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>20</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>分辨率</string>
     </property>
    </widget>
   </widget>

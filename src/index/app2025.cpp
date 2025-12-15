@@ -3,22 +3,43 @@
 #include "src/gallery/gallery.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <QFileInfo>
+#include <QDebug>
+#include <QDir>
+
+#ifdef __linux__
+extern "C"
+{
+    void touch_init();
+    void touch_simulate(int x, int y);
+    void touch_cleanup();
+}
+#endif
+
 app2025::app2025(QWidget *parent)
     : QMainWindow(parent), ui(new Ui_app2025)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
     process = new QProcess(this);
+#ifdef __linux__
+    touch_init();
+#endif
+    QByteArray ba = qgetenv("PROJECT_ROOT");
+    QString projectRoot = ba.isEmpty() ? QString() : QString::fromUtf8(ba);
 }
 
 app2025::~app2025()
 {
+#ifdef __linux__
+    touch_cleanup();
+#endif
     delete ui;
 }
 
 void app2025::on_close_btn_clicked()
 {
-        // 使用 QMessageBox 实例以便设置最小尺寸（避免 QMessageBox::question 无法调整尺寸的问题）
+    // 使用 QMessageBox 实例以便设置最小尺寸（避免 QMessageBox::question 无法调整尺寸的问题）
     QMessageBox msgBox(this);
     msgBox.setWindowTitle(tr("退出应用"));
     msgBox.setText(tr("确定退出吗？"));
@@ -37,11 +58,12 @@ void app2025::on_close_btn_clicked()
     }
 )");
 
-    if (msgBox.exec() != QMessageBox::Yes) {
+    if (msgBox.exec() != QMessageBox::Yes)
+    {
         return;
     }
-
-    QApplication::quit();
+    QMessageBox::warning(this, tr("退出失败"), tr("底层界面，不允许退出！！！"));
+    // QApplication::quit();
 }
 
 void app2025::on_app1_btn_clicked()
@@ -77,11 +99,10 @@ void app2025::on_app3_btn_clicked()
     }
     )");
 
-    if (msgBox.exec() != QMessageBox::Yes) {
+    if (msgBox.exec() != QMessageBox::Yes)
+    {
         return;
     }
-
-
 
     // 禁用其它按钮，防止重复点击
     ui->app1_btn->setEnabled(false);

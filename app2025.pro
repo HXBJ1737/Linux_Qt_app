@@ -28,3 +28,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     img.qrc
+    
+unix:!macx {
+# Linux特定设置
+    message("Building for Linux")
+    LIBS += -L$$PWD -ltouch
+    
+}
