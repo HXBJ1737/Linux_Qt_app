@@ -54,7 +54,7 @@
     <property name="font">
      <font>
       <family>Microsoft YaHei UI</family>
-      <pointsize>16</pointsize>
+      <pointsize>18</pointsize>
       <italic>false</italic>
       <bold>false</bold>
      </font>
@@ -89,7 +89,7 @@ border-radius: 10px;</string>
     <property name="font">
      <font>
       <family>Microsoft YaHei UI</family>
-      <pointsize>14</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -137,7 +137,7 @@ border-radius: 10px;</string>
     <property name="font">
      <font>
       <family>Microsoft YaHei UI</family>
-      <pointsize>14</pointsize>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -146,7 +146,8 @@ background-color: rgb(151, 255, 194);
 border-radius: 10px;</string>
     </property>
     <property name="text">
-     <string>APP</string>
+     <string>正点原子
+APP</string>
     </property>
    </widget>
   </widget>
