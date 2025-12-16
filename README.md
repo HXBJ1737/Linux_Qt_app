@@ -1,6 +1,6 @@
 # Linux_Qt5_Camera
 
-## 此分支scr_6i 适用于 6寸 & 固定分辨率1280x720
+## 此分支scr_6inch 适用于 6寸 & 固定分辨率1280x720
 ## 一、Window编译方法
     使用VSCode或Qtcreater可直接编译（需要Qt环境搭建）
 ## 二、Linux交叉编译ARM版编译方法
@@ -23,7 +23,7 @@
     cd linux_touch
     make
     ## 如果步骤1操作成功，可以看到make后输出的编译器是aarch64-rockchip-linux-gnu-gcc ，不是gcc.
-    cp libtouch ../
+    cp libtouch.so ../
 
 ## 3.交叉编译此Qt项目
     cd ../      #cd到工程根目录
@@ -33,11 +33,11 @@
 ### 4.1方法一：编译进文件系统在重新烧录rootfs.img
     将项目中的 hxbj 文件夹复制到linux_sdk/buildroot/board/rockchip/common/base下
     (hxbj文件夹里面是我编译后的app2025和libtouch.so和后面用到的自启动脚本,你可以换成你刚才编译的)
-
+    
     cd 到你的LinuxSDK目录
     ./build.sh rootfs   
     # 然后重新烧录rootfs.img
-   
+
 
 ### 4.2方法二：直接上传至开发板
 #### 我使用ADB，以此为例
@@ -65,7 +65,7 @@
     saveimg           相册存储目录
     video.sh          ffmpeg推流+屏幕显示测试
     weston.ini        桌面配置文件
-    
+
 ### 5.1.简单运行
     ./start_app2025.sh
 ### 5.2进一步配置（全屏+旋转屏幕）
@@ -84,5 +84,4 @@
 ## 6.问题解答
 ### 6.1摄像头无法显示，参考 https://hx.sn.cn/archives/L2R8QU6o 解决
 ## 欢迎讨论 QQ：2437224636
-
 
