@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QPixmap>
+#include <QStringList>
 class gallery : public QMainWindow
 {
     Q_OBJECT
@@ -28,7 +29,7 @@ private:
     Ui::gallery *ui;
     QLabel *imageLabel = nullptr; // 用于显示图片
     QLabel *pathLabel = nullptr;  // 左下角显示路径/信息
-
+    QStringList imageFiles; // 新增：目录中所有图片文件列表
     // 索引管理
     int maxIndex = -1;
     int currentIndex = -1;

@@ -1,15 +1,25 @@
 #pragma once
 #include "ui_cam.h"
 #include <QMainWindow>
-#include <QCamera>
+#include <QDir>
 #include <QCameraInfo>
-#include <QCameraViewfinder>
+#include <QCamera>
 #include <QCameraImageCapture>
 #include <QCameraViewfinderSettings>
 #include <QImageEncoderSettings>
 #include <QMultimedia>
-#include <QMouseEvent>
+#include <QVideoWidget>
+#include <QDateTime>
+#include <QUuid>
 #include <QTimer>
+#include <QMouseEvent>
+#include <QApplication>
+#include <QImageReader>
+#include <QRegExp>
+#include <QSet>
+#include <QDebug>
+#include <QFile>
+#include <QFileInfo>
 class cam : public QMainWindow
 {
     Q_OBJECT
@@ -42,7 +52,7 @@ private:
     QCameraImageCapture *cp;       // 抓拍部件
     QVideoWidget *w;
 
-    int default_index = 1;
+    int default_index = 0;
     int maxIndex;
 
     // QWidget interface

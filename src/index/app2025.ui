@@ -34,8 +34,7 @@
    </property>
    <property name="styleSheet">
     <string notr="true">#centralwidget{
-	 border-image: url(:/src/img/b.jpg);
-
+	border-image: url(:/img/b.jpg);
 }
 
 
@@ -148,6 +147,30 @@ border-radius: 10px;</string>
     <property name="text">
      <string>正点原子
 APP</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="app4_btn">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>60</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Microsoft YaHei UI</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(151, 255, 194);
+border-radius: 10px;</string>
+    </property>
+    <property name="text">
+     <string>YOLOV5</string>
     </property>
    </widget>
   </widget>

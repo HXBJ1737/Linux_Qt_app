@@ -9,17 +9,20 @@ SOURCES += \
     src/main.cpp \
     src/index/app2025.cpp \
     src/cam/cam.cpp \
-    src/gallery/gallery.cpp
+    src/gallery/gallery.cpp \
+    src/yolov5/yolov5.cpp
 
 HEADERS += \
    src/index/app2025.h \
    src/cam/cam.h \
    src/gallery/gallery.h \
+    src/yolov5/yolov5.h
 
 FORMS +=  \
     src/index/app2025.ui \
     src/cam/cam.ui \
-    src/gallery/gallery.ui
+    src/gallery/gallery.ui \
+    src/yolov5/yolov5.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

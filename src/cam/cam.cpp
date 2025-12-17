@@ -14,69 +14,83 @@ bool cam_ui_open = false;
 cam::cam(QWidget *parent)
     : QMainWindow(parent), ui(new Ui_cam)
 {
-    ui->setupUi(this);
+ ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
+
     QByteArray ba = qgetenv("PROJECT_ROOT");
     QString projectRoot = ba.isEmpty() ? QString() : QString::fromUtf8(ba);
     QDir::setCurrent(projectRoot);
-    //-----------------/
-    QDir dir("./saveimg");
-    if (!dir.exists())
-    {
-        dir.mkpath(".");
-    }
-    QStringList filters;
-    filters << "pic_*.jpg";
-    dir.setNameFilters(filters);
-    dir.setSorting(QDir::Name);
 
-    maxIndex = -1;
-    foreach (QString file, dir.entryList())
+    // 确保保存目录存在
+    QDir imgDir("./img");
+    if (!imgDir.exists()) imgDir.mkpath(".");
+
+    // 使用所有受支持的图片格式作为过滤器，扫描 ./img 和 ./ 两个目录（绝对路径、去重、排序）
+    QStringList filters;
+    for (const QByteArray &fmt : QImageReader::supportedImageFormats())
+        filters << "*." + QString(fmt).toLower();
+
+    QStringList searchDirs = { "./img", "./" };
+    QSet<QString> seen;
+    QStringList foundFiles;
+    for (const QString &dpath : searchDirs)
     {
-        QRegExp rx("pic_(\\d+)\\.jpg");
-        if (rx.exactMatch(file))
+        QDir d(dpath);
+        if (!d.exists()) continue;
+        d.setNameFilters(filters);
+        d.setSorting(QDir::Name);
+        QStringList entries = d.entryList(QDir::Files, QDir::Name);
+        for (const QString &ename : entries)
         {
-            int idx = rx.cap(1).toInt();
-            if (idx > maxIndex)
-                maxIndex = idx;
+            QString abs = d.absoluteFilePath(ename);
+            if (!seen.contains(abs))
+            {
+                seen.insert(abs);
+                foundFiles.append(abs);
+            }
         }
     }
-    if (maxIndex > -1)
+    // 按文件名排序（忽略大小写）
+    std::sort(foundFiles.begin(), foundFiles.end(), [](const QString &a, const QString &b){
+        return QFileInfo(a).fileName().toLower() < QFileInfo(b).fileName().toLower();
+    });
+
+    // 如果有图片，设置缩略按钮为最后一张
+    if (!foundFiles.isEmpty())
     {
-        QString fileName = QString("./saveimg/pic_%1.jpg").arg(maxIndex);
-        ui->picbtn->setIcon(QIcon(fileName));
+        QString last = foundFiles.last();
+        ui->picbtn->setIcon(QIcon(last));
     }
+    // 可以在需要时把 foundFiles 保存为成员以便后续使用（这里仅用于缩略图）
 
-    //---------------
+    // 初始化摄像头
     cameraList = QCameraInfo::availableCameras();
-
     if (cameraList.count() > 0)
     {
-
-        foreach (QCameraInfo info, cameraList)
+        for (const QCameraInfo &info : cameraList)
         {
-            // 人能读懂的设备名字
-            qDebug() << info.description();
-            qDebug() << info.deviceName();
+            qDebug() << info.description() << info.deviceName();
         }
     }
-    //----
-    myCamera = new QCamera(cameraList[default_index], this); // camera指向指定的摄像头
+
+    // 使用默认索引（请确保 default_index 有合理值）
+    myCamera = new QCamera(cameraList.isEmpty() ? QCameraInfo() : cameraList[default_index], this);
     cp = new QCameraImageCapture(myCamera);
 
-    // 抓取图片的信号
+    // 捕获信号
     connect(cp, &QCameraImageCapture::imageCaptured, this, &cam::save_pic);
-    // 设置默认摄像头参数
+
+    // 默认 viewfinder 设置（可后续由 comboBox 修改）
     QCameraViewfinderSettings set;
-    // set.setResolution(960, 720); // 设置显示分辨率
-    // set.setMaximumFrameRate(30);  // 设置帧率
     myCamera->setViewfinderSettings(set);
+
     w = new QVideoWidget(ui->widget);
     w->resize(ui->widget->size());
     myCamera->stop();
-    myCamera->setViewfinder(w); // 指定图像的输出窗口
-    myCamera->start();          // 启动
+    myCamera->setViewfinder(w);
+    myCamera->start();
     w->show();
+
 #ifdef __linux__
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &cam::onTimeout);
@@ -100,18 +114,52 @@ cam::~cam()
 // void cam::on_openbtn_clicked() // 刷新
 // {
 // }
+static QString makeUniqueImagePath(const QString &dirPath, const QString &ext = "jpg")
+{
+    QDir dir(dirPath);
+    if (!dir.exists()) dir.mkpath(".");
 
+    // 时间戳 + UUID 保证唯一性（不依赖索引）
+    QString base = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss_zzz");
+    QString uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    QString name = QString("%1_%2.%3").arg(base).arg(uuid).arg(ext);
+    return dir.filePath(name);
+}
 void cam::save_pic(int id, const QImage &preview)
 {
 
-    int nextIndex = maxIndex + 1;
-    maxIndex = nextIndex;
-    QString fileName = QString("./saveimg/pic_%1.jpg").arg(nextIndex);
-    qDebug() << id << fileName;
-    preview.save(fileName);
+   // 保存目录与格式（可改为从设置中读取）
+    const QString dirPath = QStringLiteral("./img");
+    const QString ext = QStringLiteral("jpg"); // 或 "png"
+
+    // 先生成目标路径与临时文件路径
+    QString target = makeUniqueImagePath(dirPath, ext);
+    QString tmp = target + ".tmp";
+
+    // 保存到临时文件（指定格式）
+    bool ok = preview.save(tmp, ext.toUtf8().constData());
+    if (!ok)
+    {
+        qWarning() << "保存临时图片失败：" << tmp;
+        QFile::remove(tmp);
+        return;
+    }
+
+    // 原子重命名到目标文件（覆盖保护）
+    if (QFile::exists(target))
+        QFile::remove(target);
+    if (!QFile::rename(tmp, target))
+    {
+        qWarning() << "临时文件重命名失败：" << tmp << "->" << target;
+        QFile::remove(tmp);
+        return;
+    }
+
+    qDebug() << id << "saved to" << target;
+
+    // 更新缩略按钮图标（使用缩放的 pixmap）
     QPixmap mmp = QPixmap::fromImage(preview);
-    mmp = mmp.scaled(ui->picbtn->size(), Qt::KeepAspectRatio,
-                     Qt::SmoothTransformation);
+    mmp = mmp.scaled(ui->picbtn->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     ui->picbtn->setIcon(QIcon(mmp));
 }
 

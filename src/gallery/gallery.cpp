@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include "src/cam/cam.h"
-
+#include <QImageReader>
 extern bool cam_ui_open;
 gallery::gallery(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::gallery)
@@ -16,32 +16,45 @@ gallery::gallery(QWidget *parent)
     QString projectRoot = ba.isEmpty() ? QString() : QString::fromUtf8(ba);
     QDir::setCurrent(projectRoot);
 
-    QDir dir("./saveimg");
+    QDir dir("./img");
     if (!dir.exists())
-    {
         dir.mkpath(".");
-    }
-    QStringList filters;
-    filters << "pic_*.jpg";
-    dir.setNameFilters(filters);
-    dir.setSorting(QDir::Name);
 
-    maxIndex = -1;
-    foreach (QString file, dir.entryList())
+    // 使用所有受支持的图片格式作为过滤器
+    QStringList filters;
+    for (const QByteArray &fmt : QImageReader::supportedImageFormats())
+        filters << "*." + QString(fmt).toLower();
+
+    // 扫描两个目录：./img 和 ./，收集绝对路径，去重并排序
+    QStringList searchDirs = {"./img", "./"};
+    QSet<QString> seen;
+    imageFiles.clear();
+    for (const QString &dpath : searchDirs)
     {
-        QRegExp rx("pic_(\\d+)\\.jpg");
-        if (rx.exactMatch(file))
+        QDir d(dpath);
+        if (!d.exists())
+            continue;
+        d.setNameFilters(filters);
+        d.setSorting(QDir::Name);
+        QStringList entries = d.entryList(QDir::Files, QDir::Name);
+        for (const QString &ename : entries)
         {
-            int idx = rx.cap(1).toInt();
-            if (idx > maxIndex)
-                maxIndex = idx;
+            QString abs = d.absoluteFilePath(ename);
+            if (!seen.contains(abs))
+            {
+                seen.insert(abs);
+                imageFiles.append(abs); // 存储绝对路径
+            }
         }
     }
+    // 可选按文件名排序（如果需要按目录顺序可调整）
+    std::sort(imageFiles.begin(), imageFiles.end(), [](const QString &a, const QString &b)
+              { return QFileInfo(a).fileName().toLower() < QFileInfo(b).fileName().toLower(); });
+
+    maxIndex = imageFiles.count() - 1;
+    currentIndex = -1;
     if (maxIndex > -1)
     {
-        // QString fileName = QString("./saveimg/pic_%1.jpg").arg(maxIndex);
-        // ui->widget->setStyleSheet(QString("border-image: url(%1);").arg(fileName));
-        // 使用 QLabel 作为图片显示容器
         imageLabel = new QLabel(ui->widget);
         imageLabel->setAlignment(Qt::AlignCenter);
 
@@ -54,10 +67,10 @@ gallery::gallery(QWidget *parent)
             "padding: 2px;"
             "border-radius: 15px;"
             "font-size: 20px;"
-            "min-width: 480px;" // 最小宽度
-            "max-width: 480px;" // 最大宽度
-            "min-height: 70px;" // 最小高度
-            "max-height: 70px;" // 最大高度
+            "min-width: 480px;"  // 最小宽度
+            "max-width: 500px;"  // 最大宽度
+            "min-height: 70px;"  // 最小高度
+            "max-height: 200px;" // 最大高度
         );
         pathLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
         pathLabel->setWordWrap(true);
@@ -65,9 +78,10 @@ gallery::gallery(QWidget *parent)
         pathLabel->setMargin(6);
         pathLabel->setVisible(ui->radioButton->isChecked());
         // 加载并显示图片（封装的函数会同时更新 pathLabel）
-        QString fileName = QString("./saveimg/pic_%1.jpg").arg(maxIndex);
-        showImage(fileName);
+        // 初始显示最后一张
         currentIndex = maxIndex;
+        QString filePath = imageFiles.at(currentIndex);
+        showImage(filePath);
     }
 }
 void gallery::showImage(const QString &relPath)
@@ -103,7 +117,17 @@ void gallery::showImage(const QString &relPath)
     else
         sizeStr = QString("%1 MB").arg((double)fsize / 1024.0 / 1024.0, 0, 'f', 2);
 
-    QString info = QString("路径: %1\n大小: %2 x %3  %4 ").arg(absPath).arg(origW).arg(origH).arg(sizeStr);
+    // 获取文件最后修改时间并格式化为 "YYYY-MM-DD HH:MM:SS"
+    QDateTime mtime = fi.lastModified();
+    QString timeStr = mtime.toString("yyyy-MM-dd HH:mm:ss");
+
+    // 包含路径、分辨率、文件大小和时间
+    QString info = QString("路径: %1\n分辨率: %2 x %3  大小: %4\n时间: %5")
+                       .arg(absPath)
+                       .arg(origW)
+                       .arg(origH)
+                       .arg(sizeStr)
+                       .arg(timeStr);
 
     pathLabel->setText(info);
     pathLabel->adjustSize();
@@ -138,9 +162,8 @@ void gallery::on_lastBtn_clicked()
     {
         currentIndex = maxIndex;
     }
-
-    QString fileName = QString("./saveimg/pic_%1.jpg").arg(currentIndex);
-    showImage(fileName);
+    QString filePath = imageFiles.at(currentIndex);
+    showImage(filePath);
 }
 
 void gallery::on_nextBtn_clicked()
@@ -151,8 +174,8 @@ void gallery::on_nextBtn_clicked()
         currentIndex = 0;
     }
 
-    QString fileName = QString("./saveimg/pic_%1.jpg").arg(currentIndex);
-    showImage(fileName);
+    QString filePath = imageFiles.at(currentIndex);
+    showImage(filePath);
 }
 
 void gallery::on_rm_Btn_clicked()
@@ -161,8 +184,7 @@ void gallery::on_rm_Btn_clicked()
     if (currentIndex < 0)
         return;
 
-    QString dirPath = "./saveimg";
-    QString filePath = QString("%1/pic_%2.jpg").arg(dirPath).arg(currentIndex);
+    QString filePath = imageFiles.at(currentIndex);
 
     // 确认删除
     if (QMessageBox::question(this, tr("删除图片"), tr("确定要删除当前图片？"),
@@ -184,36 +206,49 @@ void gallery::on_rm_Btn_clicked()
         return;
     }
 
-    // 重新扫描目录，更新 maxIndex 与 currentIndex
-    QDir dir(dirPath);
-    QStringList filters;
-    filters << "pic_*.jpg";
-    dir.setNameFilters(filters);
-    dir.setSorting(QDir::Name);
+    QStringList filters2;
+    for (const QByteArray &fmt : QImageReader::supportedImageFormats())
+        filters2 << "*." + QString(fmt).toLower();
 
-    maxIndex = -1;
-    foreach (QString f, dir.entryList())
+    QStringList searchDirs2 = {"./img", "./"};
+    QSet<QString> seen2;
+    imageFiles.clear();
+    for (const QString &dpath : searchDirs2)
     {
-        QRegExp rx("pic_(\\d+)\\.jpg");
-        if (rx.exactMatch(f))
+        QDir d(dpath);
+        if (!d.exists())
+            continue;
+        d.setNameFilters(filters2);
+        d.setSorting(QDir::Name);
+        QStringList entries = d.entryList(QDir::Files, QDir::Name);
+        for (const QString &ename : entries)
         {
-            int idx = rx.cap(1).toInt();
-            if (idx > maxIndex)
-                maxIndex = idx;
+            QString abs = d.absoluteFilePath(ename);
+            if (!seen2.contains(abs))
+            {
+                seen2.insert(abs);
+                imageFiles.append(abs);
+            }
         }
     }
+    std::sort(imageFiles.begin(), imageFiles.end(), [](const QString &a, const QString &b)
+              { return QFileInfo(a).fileName().toLower() < QFileInfo(b).fileName().toLower(); });
+    maxIndex = imageFiles.count() - 1;
 
     if (maxIndex > -1)
     {
-        currentIndex = maxIndex;
-        QString fileName = QString("./saveimg/pic_%1.jpg").arg(currentIndex);
-        showImage(fileName);
+        if (currentIndex > maxIndex)
+            currentIndex = maxIndex;
+        QString nextPath = imageFiles.at(currentIndex);
+        showImage(nextPath);
     }
     else
     {
         // 无图片，清空显示
         currentIndex = -1;
         ui->widget->setStyleSheet("");
+        imageLabel->clear();
+        pathLabel->clear();
     }
 }
 

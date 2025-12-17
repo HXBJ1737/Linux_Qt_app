@@ -1,12 +1,14 @@
-#include "app2025.h"
-#include "src/cam/cam.h"
-#include "src/gallery/gallery.h"
+
+
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QDebug>
 #include <QDir>
-
+#include "app2025.h"
+#include "src/cam/cam.h"
+#include "src/gallery/gallery.h"
+#include "src/yolov5/yolov5.h"
 #ifdef __linux__
 extern "C"
 {
@@ -63,7 +65,7 @@ void app2025::on_close_btn_clicked()
         return;
     }
     QMessageBox::warning(this, tr("退出失败"), tr("底层界面，不允许退出！！！"));
-    // QApplication::quit();
+    //QApplication::quit();
 }
 
 void app2025::on_app1_btn_clicked()
@@ -137,4 +139,10 @@ void app2025::on_app3_btn_clicked()
         ui->app3_btn->setEnabled(true);
         QMessageBox::warning(this, tr("启动失败"), tr("无法启动 QDesktop"));
     }
+}
+
+void app2025::on_app4_btn_clicked()
+{
+    yolov5 *y = new yolov5;
+    y->show();
 }

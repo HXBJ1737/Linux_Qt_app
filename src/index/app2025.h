@@ -18,6 +18,8 @@ private slots:
 
     void on_app3_btn_clicked();
 
+    void on_app4_btn_clicked();
+
 private:
     Ui_app2025* ui;
     QProcess *process;
