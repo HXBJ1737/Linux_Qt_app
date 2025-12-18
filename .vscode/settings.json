@@ -6,6 +6,11 @@
         "deque": "cpp",
         "list": "cpp",
         "string": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "qmainwindow": "cpp",
+        "qabstractvideobuffer": "cpp",
+        "fstream": "cpp",
+        "qcameraviewfinder": "cpp",
+        "qcameraimagecapture": "cpp"
     }
 }

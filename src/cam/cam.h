@@ -20,13 +20,16 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
+#include <QVideoProbe>
+#include <QElapsedTimer>
+#include <QVideoFrame>
 class cam : public QMainWindow
 {
     Q_OBJECT
 
 public:
     cam(QWidget *parent = nullptr);
-    ~cam();
+    ~cam() override;
 
 public slots:
     // void on_openbtn_clicked();
@@ -44,6 +47,8 @@ private slots:
 
     void onTimeout();
 
+    void onVideoFrameProbed(const QVideoFrame &frame);
+
 private:
     Ui_cam *ui;
     QTimer *timer;
@@ -51,6 +56,10 @@ private:
     QCamera *myCamera;             // 相机
     QCameraImageCapture *cp;       // 抓拍部件
     QVideoWidget *w;
+    QVideoProbe *videoProbe = nullptr;
+    QElapsedTimer fpsTimer;
+    int fpsFrameCount = 0;
+    double currentFps = 0.0;
 
     int default_index = 0;
     int maxIndex;

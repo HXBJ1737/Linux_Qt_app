@@ -1,0 +1,10 @@
+debug/main.o
+debug/app2025.o
+debug/cam.o
+debug/gallery.o
+debug/yolo_app.o
+debug/qrc_img.o
+debug/moc_app2025.o
+debug/moc_cam.o
+debug/moc_gallery.o
+debug/moc_yolo_app.o

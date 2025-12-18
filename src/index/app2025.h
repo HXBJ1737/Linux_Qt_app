@@ -2,6 +2,7 @@
 #include "ui_app2025.h"
 #include <QMainWindow>
 #include <QProcess>
+#include <QMessageBox>
 class app2025 : public QMainWindow {
     Q_OBJECT
     

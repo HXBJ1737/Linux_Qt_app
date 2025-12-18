@@ -14,7 +14,7 @@ bool cam_ui_open = false;
 cam::cam(QWidget *parent)
     : QMainWindow(parent), ui(new Ui_cam)
 {
- ui->setupUi(this);
+    ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
 
     QByteArray ba = qgetenv("PROJECT_ROOT");
@@ -23,20 +23,22 @@ cam::cam(QWidget *parent)
 
     // 确保保存目录存在
     QDir imgDir("./img");
-    if (!imgDir.exists()) imgDir.mkpath(".");
+    if (!imgDir.exists())
+        imgDir.mkpath(".");
 
     // 使用所有受支持的图片格式作为过滤器，扫描 ./img 和 ./ 两个目录（绝对路径、去重、排序）
     QStringList filters;
     for (const QByteArray &fmt : QImageReader::supportedImageFormats())
         filters << "*." + QString(fmt).toLower();
 
-    QStringList searchDirs = { "./img", "./" };
+    QStringList searchDirs = {"./img", "./"};
     QSet<QString> seen;
     QStringList foundFiles;
     for (const QString &dpath : searchDirs)
     {
         QDir d(dpath);
-        if (!d.exists()) continue;
+        if (!d.exists())
+            continue;
         d.setNameFilters(filters);
         d.setSorting(QDir::Name);
         QStringList entries = d.entryList(QDir::Files, QDir::Name);
@@ -51,9 +53,8 @@ cam::cam(QWidget *parent)
         }
     }
     // 按文件名排序（忽略大小写）
-    std::sort(foundFiles.begin(), foundFiles.end(), [](const QString &a, const QString &b){
-        return QFileInfo(a).fileName().toLower() < QFileInfo(b).fileName().toLower();
-    });
+    std::sort(foundFiles.begin(), foundFiles.end(), [](const QString &a, const QString &b)
+              { return QFileInfo(a).fileName().toLower() < QFileInfo(b).fileName().toLower(); });
 
     // 如果有图片，设置缩略按钮为最后一张
     if (!foundFiles.isEmpty())
@@ -79,6 +80,19 @@ cam::cam(QWidget *parent)
 
     // 捕获信号
     connect(cp, &QCameraImageCapture::imageCaptured, this, &cam::save_pic);
+    videoProbe = new QVideoProbe(this);
+    if (videoProbe->setSource(myCamera))
+    {
+        connect(videoProbe, &QVideoProbe::videoFrameProbed,
+                this, &cam::onVideoFrameProbed);
+        fpsTimer.start();
+        fpsFrameCount = 0;
+    }
+    else
+    {
+        delete videoProbe;
+        videoProbe = nullptr;
+    }
 
     // 默认 viewfinder 设置（可后续由 comboBox 修改）
     QCameraViewfinderSettings set;
@@ -98,6 +112,22 @@ cam::cam(QWidget *parent)
     timer->start(600);
 #endif
 }
+void cam::onVideoFrameProbed(const QVideoFrame &frame)
+{
+    Q_UNUSED(frame);
+    fpsFrameCount++;
+    qint64 elapsed = fpsTimer.elapsed();
+    if (elapsed >= 1000)
+    {
+        currentFps = fpsFrameCount * 1000.0 / (double)elapsed;
+        fpsFrameCount = 0;
+        fpsTimer.restart();
+        if (ui && ui->label_fps)
+        {
+            ui->label_fps->setText(QString("FPS: %1").arg(QString::number(currentFps, 'f', 1)));
+        }
+    }
+}
 void cam::onTimeout()
 {
 #ifdef __linux__
@@ -106,7 +136,12 @@ void cam::onTimeout()
 #endif
 }
 cam::~cam()
-{
+{ // 清理 probe（parent 为 this 可省略，但显式删除也可以）
+    if (videoProbe)
+    {
+        videoProbe->disconnect(); /* parent will delete */
+        videoProbe = nullptr;
+    }
 
     delete ui;
 }
@@ -117,7 +152,8 @@ cam::~cam()
 static QString makeUniqueImagePath(const QString &dirPath, const QString &ext = "jpg")
 {
     QDir dir(dirPath);
-    if (!dir.exists()) dir.mkpath(".");
+    if (!dir.exists())
+        dir.mkpath(".");
 
     // 时间戳 + UUID 保证唯一性（不依赖索引）
     QString base = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss_zzz");
@@ -128,7 +164,7 @@ static QString makeUniqueImagePath(const QString &dirPath, const QString &ext = 
 void cam::save_pic(int id, const QImage &preview)
 {
 
-   // 保存目录与格式（可改为从设置中读取）
+    // 保存目录与格式（可改为从设置中读取）
     const QString dirPath = QStringLiteral("./img");
     const QString ext = QStringLiteral("jpg"); // 或 "png"
 
