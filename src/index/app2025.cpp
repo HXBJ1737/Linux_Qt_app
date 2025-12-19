@@ -83,6 +83,7 @@ void app2025::on_app2_btn_clicked()
 void app2025::on_app3_btn_clicked()
 {
 
+#ifdef __linux__
     QMessageBox msgBox(this);
     msgBox.setWindowTitle(tr("启动应用"));
     msgBox.setText(tr("确定启动 QDesktop 吗？"));
@@ -139,6 +140,9 @@ void app2025::on_app3_btn_clicked()
         ui->app3_btn->setEnabled(true);
         QMessageBox::warning(this, tr("启动失败"), tr("无法启动 QDesktop"));
     }
+#else
+    QMessageBox::warning(this, tr("启动失败"), tr("此应用仅可在RK3566上运行"));
+#endif
 }
 
 void app2025::on_app4_btn_clicked()

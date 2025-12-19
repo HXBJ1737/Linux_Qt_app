@@ -72,7 +72,6 @@ INCLUDEPATH += \
     ./src \
     ./yolo11 \
     $$RK356X_SYSROOT/usr/include \
-    ../utils  # 添加 utils 目录
 
 
     # ====== 链接库配置 ======
@@ -119,7 +118,8 @@ INCLUDEPATH += \
     qnx: target.path = /tmp/$${TARGET}/bin
     else: unix:!android: target.path = /opt/$${TARGET}/bin
     !isEmpty(target.path): INSTALLS += target
-
+	
+	unix:OBJECTS_DIR = ./build
     # ====== 调试信息 ======
     message("=== 项目配置信息 ===")
     message("目标平台: $$MAKE_SYSTEM_NAME")

@@ -9,5 +9,6 @@ echo "Successfully replaced rcS"
 ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 echo "Successfully Set Time"
 
-echo "OS will reboot"
-reboot
+echo "Please reboot to take effects"
+#echo "OS will reboot"
+# reboot

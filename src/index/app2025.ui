@@ -170,7 +170,7 @@ background-color: rgb(151, 255, 194);
 border-radius: 10px;</string>
     </property>
     <property name="text">
-     <string>YOLOV5</string>
+     <string>YOLO11</string>
     </property>
    </widget>
   </widget>
