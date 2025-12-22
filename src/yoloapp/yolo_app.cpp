@@ -41,7 +41,7 @@ yolo_app::yolo_app(QWidget *parent)
     myCamera = new QCamera(cameraList[0], this); // camera指向指定的摄像头
     // 设置默认摄像头参数
     QCameraViewfinderSettings set;
-
+    set.setResolution(640, 480);
     myCamera->setViewfinderSettings(set);
     myCamera->start(); // 启动
                        // displayLabel 用来显示处理后带框的图像
@@ -80,7 +80,7 @@ yolo_app::~yolo_app()
 
 void yolo_app::on_back_btn_clicked()
 {
-    #ifdef __linux__
+#ifdef __linux__
     // 先断开并删除 probe，避免在释放 camera 时还触发回调
     if (probe)
     {
@@ -119,6 +119,23 @@ void yolo_app::on_back_btn_clicked()
 #ifdef __linux__
 void yolo_app::processFrame(const QVideoFrame &frame)
 {
+    static int fpsFrameCount = 0;
+    static QElapsedTimer fpsTimer;
+    static double currentFps = 0.0;
+    if (!fpsTimer.isValid())
+        fpsTimer.start();
+    fpsFrameCount++;
+    qint64 elapsed = fpsTimer.elapsed();
+    if (elapsed >= 1000)
+    {
+        currentFps = fpsFrameCount * 1000.0 / (double)elapsed;
+        fpsFrameCount = 0;
+        fpsTimer.restart();
+        if (ui && ui->label_fps)
+        {
+            ui->label_fps->setText(QString("FPS: %1").arg(QString::number(currentFps, 'f', 1)));
+        }
+    }
 
     if (!frame.isValid())
         return;
@@ -150,7 +167,15 @@ void yolo_app::processFrame(const QVideoFrame &frame)
     }
 
     // 在 NV12 缓冲上画框（draw_* 函数需支持 YUV420SP 或内部进行转换）
+    // 根据分辨率自适应线宽和字体
+    int baseW = src.width > 0 ? src.width : 640;
+    int baseH = src.height > 0 ? src.height : 480;
+    int scaleW = baseW / 320;
+    int scaleH = baseH / 240;
+    int box_thickness = qMax(2, scaleW);
+    int font_size = qMax(8, 6 * scaleH);
     char text[256];
+    QMap<QString, int> labelCount;
     for (int i = 0; i < od_results.count; i++)
     {
         object_detect_result *det = &od_results.results[i];
@@ -159,9 +184,27 @@ void yolo_app::processFrame(const QVideoFrame &frame)
         int x2 = det->box.right;
         int y2 = det->box.bottom;
 
-        draw_rectangle(&src, x1, y1, x2 - x1, y2 - y1, COLOR_BLUE, 3);
-        snprintf(text, sizeof(text), "%s %.1f%%", coco_cls_to_name(det->cls_id), det->prop * 100);
-        draw_text(&src, text, x1, y1 - 20, COLOR_RED, 10);
+        draw_rectangle(&src, x1, y1, x2 - x1, y2 - y1, COLOR_BLUE, box_thickness);
+        snprintf(text, sizeof(text), "%s %.0f%%", coco_cls_to_name(det->cls_id), det->prop * 100);
+        draw_text(&src, text, x1, y1 - 20 * scaleH, COLOR_RED, font_size);
+        QString label = QString::fromUtf8(coco_cls_to_name(det->cls_id));
+        labelCount[label]++;
+    }
+    if (ui && ui->label_info)
+    {
+        if (labelCount.isEmpty())
+        {
+            ui->label_info->setText("无检测目标");
+        }
+        else
+        {
+            QStringList lines;
+            for (auto it = labelCount.constBegin(); it != labelCount.constEnd(); ++it)
+            {
+                lines << QString("%1 %2").arg(it.key()).arg(it.value());
+            }
+            ui->label_info->setText(lines.join("\n"));
+        }
     }
 
     // NV12 -> RGB 转换并显示（使用 OpenCV）
@@ -184,7 +227,6 @@ void yolo_app::processFrame(const QVideoFrame &frame)
         src.size = 0;
     }
 }
-// ...existing code...
 
 bool yolo_app::convertNV12ToImageBufferSimple(QVideoFrame &frame, image_buffer_t *image_buf)
 {
@@ -272,4 +314,36 @@ bool yolo_app::convertNV12ToImageBufferSimple(QVideoFrame &frame, image_buffer_t
     frame.unmap();
     return true;
 }
+
+void yolo_app::on_comboBox_currentIndexChanged(int index)
+{
+#ifdef __linux__
+    if (!myCamera)
+        return;
+
+    QSize desired;
+    if (index == 0)
+        desired = QSize(640, 480);
+    else if (index == 1)
+        desired = QSize(960, 720);
+    else if (index == 2)
+        desired = QSize(1280, 960);
+    else if (index == 3)
+        desired = QSize(1920, 1440);
+    else if (index == 4)
+        desired = QSize(2592, 1944);
+    else
+        return;
+
+    // 设置摄像头分辨率
+    QCameraViewfinderSettings set;
+    set.setResolution(desired);
+    myCamera->stop();
+    myCamera->setViewfinderSettings(set);
+    myCamera->start();
+
+    qDebug() << "Camera resolution changed to" << desired;
+#endif
+}
+
 #endif

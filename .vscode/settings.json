@@ -11,6 +11,8 @@
         "qabstractvideobuffer": "cpp",
         "fstream": "cpp",
         "qcameraviewfinder": "cpp",
-        "qcameraimagecapture": "cpp"
+        "qcameraimagecapture": "cpp",
+        "qdebug": "cpp",
+        "qvideowidget": "cpp"
     }
 }

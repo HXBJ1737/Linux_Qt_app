@@ -48,7 +48,7 @@
     # 以此为例，可将需要的文件的也上传到开发板
     #----以上为说明----
     adb push "Z:\Qt_projects\app2025\misc\hxbj" /
-   
+
 ## 4.配置板端文件并运行
 ### 现在开发板hxbj目录下有这些文件
     QDesktop 正点原子例程可执行文件(可在 https://gitee.com/GuangzhouXingyi/imx6ull-qtdemo 自行下载编译)
@@ -67,7 +67,7 @@
     model         rknn模型
     rknn_yolo11_demo(运行方法 ./rknn_yolo11_demo model/yolo11_relu.rknn model/bus.jpg)
     rknn_yolo11_demo_zero_copy(运行方法 ./rknn_yolo11_demo_zero_copy model/yolo11_relu.rknn model/bus.jpg)
-    
+
 ### 4.1.配置桌面旋转方向与自启动
     adb shell
     cd /hxbj
@@ -97,4 +97,5 @@
 ![alt text](img/q0.png)
 ![alt text](img/q1.png)
 ![alt text](img/q3.png)
-## 其他演示图片预计考研结束后上传
+![alt text](img/q2.jpg)
+![alt text](img/q4.jpg)

@@ -16,7 +16,7 @@
 #include <QAbstractVideoBuffer>
 #include <QImage>
 #include <QTimer>
-
+#include <QElapsedTimer>
 #ifdef __linux__
 #include "yolo11.h" // for rknn_app_context_t
 #include "image_utils.h"
@@ -41,7 +41,10 @@ private slots:
     void on_back_btn_clicked();
 #ifdef __linux__
     void processFrame(const QVideoFrame &frame); // 新增槽
+    void on_comboBox_currentIndexChanged(int index);
 #endif
+
+
 
 private:
     Ui::yolo_app *ui;

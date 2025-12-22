@@ -240,9 +240,15 @@ void cam::on_comboBox_currentIndexChanged(int index)
         desired = QSize(2592, 1944);
         break; // index=0 -> 1920x1080
     case 1:
+        desired = QSize(1920, 1440);
+        break; // index=1 -> 1920x1440
+    case 2:
+        desired = QSize(1280, 960);
+        break; // index=2 -> 1280x960
+    case 3:
         desired = QSize(960, 720);
         break;
-    case 2:
+    case 4:
         desired = QSize(640, 480);
         break;
     default:
