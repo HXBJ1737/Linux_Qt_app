@@ -1,7 +1,7 @@
 #include "cam.h"
 #include "src/gallery/gallery.h"
 #include <QDir>
-#ifdef __linux__
+#ifdef __aarch64__
 extern "C"
 {
     void touch_init();
@@ -9,7 +9,6 @@ extern "C"
     void touch_cleanup();
 }
 #endif
-
 bool cam_ui_open = false;
 cam::cam(QWidget *parent)
     : QMainWindow(parent), ui(new Ui_cam)
@@ -21,7 +20,7 @@ cam::cam(QWidget *parent)
     QString projectRoot = ba.isEmpty() ? QString() : QString::fromUtf8(ba);
     QDir::setCurrent(projectRoot);
 
-    // 确保保存目录存在
+   
     QDir imgDir("./img");
     if (!imgDir.exists())
         imgDir.mkpath(".");
@@ -62,8 +61,6 @@ cam::cam(QWidget *parent)
         QString last = foundFiles.last();
         ui->picbtn->setIcon(QIcon(last));
     }
-    // 可以在需要时把 foundFiles 保存为成员以便后续使用（这里仅用于缩略图）
-
     // 初始化摄像头
     cameraList = QCameraInfo::availableCameras();
     if (cameraList.count() > 0)
@@ -73,7 +70,6 @@ cam::cam(QWidget *parent)
             qDebug() << info.description() << info.deviceName();
         }
     }
-
     // 使用默认索引（请确保 default_index 有合理值）
     myCamera = new QCamera(cameraList.isEmpty() ? QCameraInfo() : cameraList[default_index], this);
     cp = new QCameraImageCapture(myCamera);
@@ -105,12 +101,12 @@ cam::cam(QWidget *parent)
     myCamera->start();
     w->show();
 
-#ifdef __linux__
+
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &cam::onTimeout);
     timer->setSingleShot(true);
     timer->start(600);
-#endif
+
 }
 void cam::onVideoFrameProbed(const QVideoFrame &frame)
 {
@@ -130,13 +126,15 @@ void cam::onVideoFrameProbed(const QVideoFrame &frame)
 }
 void cam::onTimeout()
 {
-#ifdef __linux__
+#ifdef __aarch64__
     touch_simulate(0, 0);
     touch_simulate(0, 1);
+#else
+    qDebug() << "onTimeout called on non-aarch64 platform";
 #endif
 }
 cam::~cam()
-{ // 清理 probe（parent 为 this 可省略，但显式删除也可以）
+{ 
     if (videoProbe)
     {
         videoProbe->disconnect(); /* parent will delete */
@@ -146,9 +144,6 @@ cam::~cam()
     delete ui;
 }
 
-// void cam::on_openbtn_clicked() // 刷新
-// {
-// }
 static QString makeUniqueImagePath(const QString &dirPath, const QString &ext = "jpg")
 {
     QDir dir(dirPath);
@@ -238,13 +233,13 @@ void cam::on_comboBox_currentIndexChanged(int index)
     {
     case 0:
         desired = QSize(2592, 1944);
-        break; // index=0 -> 1920x1080
+        break;
     case 1:
         desired = QSize(1920, 1440);
-        break; // index=1 -> 1920x1440
+        break;
     case 2:
         desired = QSize(1280, 960);
-        break; // index=2 -> 1280x960
+        break;
     case 3:
         desired = QSize(960, 720);
         break;
@@ -255,7 +250,6 @@ void cam::on_comboBox_currentIndexChanged(int index)
         desired = QSize(2592, 1944);
         break;
     }
-    // 构造并应用 viewfinder 设置（需要 stop/set/start）
     QCameraViewfinderSettings viewSet;
     viewSet.setResolution(desired);
     viewSet.setMinimumFrameRate(15.0);
@@ -279,18 +273,11 @@ void cam::on_comboBox_currentIndexChanged(int index)
     }
 
     qDebug() << "Camera resolution changed to" << desired;
-#ifdef __linux__
+
     timer->start(600);
-#endif
+
 }
-void cam::sim_click(int x, int y)
-{
-    QMouseEvent *pressEvent, *releaseEvent;
-    pressEvent = new QMouseEvent(QEvent::MouseButtonPress, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-    releaseEvent = new QMouseEvent(QEvent::MouseButtonRelease, QPoint(x, y), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-    QApplication::sendEvent(w, pressEvent);
-    QApplication::sendEvent(w, releaseEvent);
-}
+
 void cam::mousePressEvent(QMouseEvent *event)
 {
     auto pos = event->pos(); // 获得鼠标点击的位置

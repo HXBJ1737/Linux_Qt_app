@@ -143,6 +143,9 @@ border-radius: 50px;
       <height>180</height>
      </size>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
     <property name="text">
      <string/>
     </property>

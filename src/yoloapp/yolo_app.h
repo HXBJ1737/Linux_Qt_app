@@ -17,6 +17,7 @@
 #include <QImage>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QMessageBox>
 #ifdef __linux__
 #include "yolo11.h" // for rknn_app_context_t
 #include "image_utils.h"

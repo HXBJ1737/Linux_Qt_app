@@ -32,7 +32,7 @@ public:
     ~cam() override;
 
 public slots:
-    // void on_openbtn_clicked();
+
 private slots:
 
     void save_pic(int id, const QImage &preview);
@@ -63,9 +63,6 @@ private:
 
     int default_index = 0;
     int maxIndex;
-
-    // QWidget interface
 protected:
-    void sim_click(int x, int y);
     void mousePressEvent(QMouseEvent *event);
 };

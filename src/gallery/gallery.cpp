@@ -43,7 +43,7 @@ gallery::gallery(QWidget *parent)
             if (!seen.contains(abs))
             {
                 seen.insert(abs);
-                imageFiles.append(abs); // 存储绝对路径
+                imageFiles.append(abs); 
             }
         }
     }
@@ -117,11 +117,9 @@ void gallery::showImage(const QString &relPath)
     else
         sizeStr = QString("%1 MB").arg((double)fsize / 1024.0 / 1024.0, 0, 'f', 2);
 
-    // 获取文件最后修改时间并格式化为 "YYYY-MM-DD HH:MM:SS"
     QDateTime mtime = fi.lastModified();
     QString timeStr = mtime.toString("yyyy-MM-dd HH:mm:ss");
 
-    // 包含路径、分辨率、文件大小和时间
     QString info = QString("路径: %1\n分辨率: %2 x %3  大小: %4\n时间: %5")
                        .arg(absPath)
                        .arg(origW)
@@ -186,7 +184,6 @@ void gallery::on_rm_Btn_clicked()
 
     QString filePath = imageFiles.at(currentIndex);
 
-    // 确认删除
     if (QMessageBox::question(this, tr("删除图片"), tr("确定要删除当前图片？"),
                               QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
     {

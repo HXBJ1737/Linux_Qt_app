@@ -6,7 +6,8 @@ yolo_app::yolo_app(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
-#ifdef __linux__
+
+#ifdef __aarch64__
     const char *model_path = "/hxbj/model/yolo11_relu.rknn";
     int ret;
 
@@ -60,13 +61,14 @@ yolo_app::yolo_app(QWidget *parent)
     {
         qDebug() << "QVideoProbe setSource failed";
     }
-
+#else
+    QMessageBox::warning(this, tr("初始化失败"), tr("此应用仅可在__aarch64__上运行"));
 #endif
 }
 
 yolo_app::~yolo_app()
 {
-#ifdef __linux__
+#ifdef __aarch64__
     deinit_post_process();
 
     int ret = release_yolo11_model(&rknn_app_ctx);
@@ -80,7 +82,7 @@ yolo_app::~yolo_app()
 
 void yolo_app::on_back_btn_clicked()
 {
-#ifdef __linux__
+#ifdef __aarch64__
     // 先断开并删除 probe，避免在释放 camera 时还触发回调
     if (probe)
     {
@@ -116,7 +118,7 @@ void yolo_app::on_back_btn_clicked()
 
     this->close();
 }
-#ifdef __linux__
+#ifdef __aarch64__
 void yolo_app::processFrame(const QVideoFrame &frame)
 {
     static int fpsFrameCount = 0;

@@ -1,15 +1,14 @@
-QT += core gui widgets multimedia multimediawidgets
+QT += core gui widgets multimedia multimediawidgets 
 
 CONFIG += c++17
 win32-msvc*:QMAKE_CXXFLAGS += /utf-8
-# QMAKE_LFLAGS += "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\""
-
 
 SOURCES += \
     src/main.cpp \
     src/index/app2025.cpp \
     src/cam/cam.cpp \
     src/gallery/gallery.cpp \
+    src/test/test.cpp \
     src/yoloapp/yolo_app.cpp \
     
 
@@ -17,6 +16,7 @@ HEADERS += \
     src/index/app2025.h \
     src/cam/cam.h \
     src/gallery/gallery.h \
+    src/test/test.h \
     src/yoloapp/yolo_app.h \
    
 
@@ -24,20 +24,24 @@ FORMS +=  \
     src/index/app2025.ui \
     src/cam/cam.ui \
     src/gallery/gallery.ui \
+    src/test/test.ui \
     src/yoloapp/yolo_app.ui \
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
     img.qrc
 
-
 linux{
+    # ====== RK3568 交叉编译配置 ======
+    TARGET_SOC = rk356x
+    MAKE_SYSTEM_NAME = Linux
+    MAKE_SYSTEM_PROCESSOR = aarch64
+    CONFIG += release
+    
+ # 交叉编译工具链路径
+    RK356X_TOOLCHAIN_PATH = /home/hxbj/tspi/linux_sdk/buildroot/output/rockchip_rk3566/host/bin
+    RK356X_SYSROOT = /home/hxbj/tspi/linux_sdk/buildroot/output/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot
 
-    SOURCES += \
+SOURCES += \
     yolo11/cpp/rknpu2/yolo11.cc \
     yolo11/cpp/postprocess.cc \
     yolo11/utils/image_utils.c \
@@ -51,17 +55,7 @@ HEADERS += \
     yolo11/utils/file_utils.h \
     yolo11/utils/image_drawing.h
 
-    # ====== RK3568 交叉编译配置 ======
-    TARGET_SOC = rk356x
-    MAKE_SYSTEM_NAME = Linux
-    MAKE_SYSTEM_PROCESSOR = aarch64
-    CONFIG += release
-
-    # 交叉编译工具链路径
-    RK356X_TOOLCHAIN_PATH = /home/hxbj/tspi/linux_sdk/buildroot/output/rockchip_rk3566/host/bin
-    RK356X_SYSROOT = /home/hxbj/tspi/linux_sdk/buildroot/output/rockchip_rk3566/host/aarch64-buildroot-linux-gnu/sysroot
-
-    # ====== 包含路径配置 ======
+   
 INCLUDEPATH += \
     ./yolo11/3rdparty/rknpu2/include \
     ./yolo11/3rdparty/jpeg_turbo/include \
@@ -73,17 +67,14 @@ INCLUDEPATH += \
     ./yolo11 \
     $$RK356X_SYSROOT/usr/include \
 
-
     # ====== 链接库配置 ======
     # RKNNRT 库
     LIBS += -lrknnrt
-
     # 其他系统库
     LIBS += -ldl -lpthread
     LIBS += -lturbojpeg
-    # OpenCV 库（如果 utils 库依赖 OpenCV）
     LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
-
+    LIBS += -L$$PWD -ltouch
     # 条件编译选项
     DISABLE_RGA = false
     DISABLE_LIBJPEG = false
@@ -125,12 +116,6 @@ INCLUDEPATH += \
     message("目标平台: $$MAKE_SYSTEM_NAME")
     message("处理器: $$MAKE_SYSTEM_PROCESSOR")
     message("SOC: $$TARGET_SOC")
-}
-
-    
-linux{
-
-    message("Building for Linux")
-    LIBS += -L$$PWD -ltouch
+    message("Building for Linux ARM64")
     
 }
