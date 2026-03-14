@@ -1,6 +1,6 @@
 #ifndef YOLO_APP_H
 #define YOLO_APP_H
-
+#ifdef __aarch64__
 #include <QMainWindow>
 #include <QVideoProbe>
 #include <QCamera>
@@ -18,13 +18,13 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QMessageBox>
-#ifdef __linux__
+
 #include "yolo11.h" // for rknn_app_context_t
 #include "image_utils.h"
 #include "file_utils.h"
 #include "image_drawing.h"
 #include <opencv2/opencv.hpp>
-#endif
+
 namespace Ui
 {
     class yolo_app;
@@ -40,10 +40,10 @@ public:
 
 private slots:
     void on_back_btn_clicked();
-#ifdef __linux__
+
     void processFrame(const QVideoFrame &frame); // 新增槽
     void on_comboBox_currentIndexChanged(int index);
-#endif
+
 
 
 
@@ -55,14 +55,14 @@ private:
 
     QVideoProbe *probe;   // 用来接收每帧
     QLabel *displayLabel; // 显示处理后帧
-#ifdef __linux__
+
     rknn_app_context_t rknn_app_ctx; // 模型上下文移到成员，保持可用性 
     bool convertNV12ToImageBufferSimple(QVideoFrame &frame, image_buffer_t *image_buf);
-#endif
+    void rotateNV12Frame180(image_buffer_t *image_buf);
     int m_index = 0;
     int maxIndex;
 
    
 };
-
+#endif
 #endif // YOLO_APP_H

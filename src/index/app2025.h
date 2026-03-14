@@ -29,6 +29,8 @@ private slots:
 
     void on_test_pushButton_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui_app2025 *ui;
     QProcess *process;

@@ -8,20 +8,22 @@
 #include "src/gallery/gallery.h"
 #include "src/yoloapp/yolo_app.h"
 #include "src/test/test.h"
+#include "src/distance/distance.h"
 #include <QMouseEvent>
 #include <QFile>
 #include <QScreen>
 #include <QApplication>
 #include <QTimer>
 #include <QDateTime>
-#ifdef __aarch64__
-extern "C"
-{
-    void touch_init();
-    void touch_simulate(int x, int y);
-    void touch_cleanup();
-}
-#endif
+
+// #ifdef __aarch64__
+// extern "C"
+// {
+//     void touch_init();
+//     void touch_simulate(int x, int y);
+//     void touch_cleanup();
+// }
+// #endif
 
 app2025::app2025(QWidget *parent)
     : QMainWindow(parent), ui(new Ui_app2025)
@@ -29,9 +31,9 @@ app2025::app2025(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
     process = new QProcess(this);
-#ifdef __aarch64__
-    touch_init();
-#endif
+// #ifdef __aarch64__
+//     touch_init();
+// #endif
     QByteArray ba = qgetenv("PROJECT_ROOT");
     QString projectRoot = ba.isEmpty() ? QString() : QString::fromUtf8(ba);
 
@@ -44,9 +46,9 @@ app2025::app2025(QWidget *parent)
 
 app2025::~app2025()
 {
-#ifdef __aarch64__
-    touch_cleanup();
-#endif
+// #ifdef __aarch64__
+//     touch_cleanup();
+// #endif
     delete ui;
 }
 
@@ -160,8 +162,12 @@ void app2025::on_app3_btn_clicked()
 
 void app2025::on_app4_btn_clicked()
 {
+#ifdef __aarch64__
     yolo_app *y = new yolo_app;
     y->show();
+#else
+    QMessageBox::warning(this, tr("启动失败"), tr("此应用仅可在__aarch64__上运行"));
+#endif
 }
 
 void app2025::mousePressEvent(QMouseEvent *event)
@@ -228,7 +234,6 @@ void app2025::on_poweroff_pushButton_clicked()
 #endif
 }
 
-
 void app2025::on_reboot_pushButton_clicked()
 {
 #ifdef __aarch64__
@@ -260,10 +265,18 @@ void app2025::on_reboot_pushButton_clicked()
 #endif
 }
 
-
 void app2025::on_test_pushButton_clicked()
 {
     test *t = new test;
     t->show();
 }
 
+void app2025::on_pushButton_clicked()
+{
+#ifdef __aarch64__
+    distance *d = new distance;
+    d->show();
+#else
+    QMessageBox::warning(this, tr("启动失败"), tr("此应用仅可在__aarch64__上运行"));
+#endif
+}

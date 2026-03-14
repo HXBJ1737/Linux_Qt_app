@@ -1,14 +1,14 @@
 #include "cam.h"
 #include "src/gallery/gallery.h"
 #include <QDir>
-#ifdef __aarch64__
-extern "C"
-{
-    void touch_init();
-    void touch_simulate(int x, int y);
-    void touch_cleanup();
-}
-#endif
+// #ifdef __aarch64__
+// extern "C"
+// {
+//     void touch_init();
+//     void touch_simulate(int x, int y);
+//     void touch_cleanup();
+// }
+// #endif
 bool cam_ui_open = false;
 cam::cam(QWidget *parent)
     : QMainWindow(parent), ui(new Ui_cam)
@@ -102,10 +102,10 @@ cam::cam(QWidget *parent)
     w->show();
 
 
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &cam::onTimeout);
-    timer->setSingleShot(true);
-    timer->start(600);
+    // timer = new QTimer(this);
+    // connect(timer, &QTimer::timeout, this, &cam::onTimeout);
+    // timer->setSingleShot(true);
+    // timer->start(600);
 
 }
 void cam::onVideoFrameProbed(const QVideoFrame &frame)
@@ -126,12 +126,12 @@ void cam::onVideoFrameProbed(const QVideoFrame &frame)
 }
 void cam::onTimeout()
 {
-#ifdef __aarch64__
-    touch_simulate(0, 0);
-    touch_simulate(0, 1);
-#else
-    qDebug() << "onTimeout called on non-aarch64 platform";
-#endif
+// #ifdef __aarch64__
+//     touch_simulate(0, 0);
+//     touch_simulate(0, 1);
+// #else
+//     qDebug() << "onTimeout called on non-aarch64 platform";
+// #endif
 }
 cam::~cam()
 { 
@@ -152,8 +152,9 @@ static QString makeUniqueImagePath(const QString &dirPath, const QString &ext = 
 
     // 时间戳 + UUID 保证唯一性（不依赖索引）
     QString base = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss_zzz");
-    QString uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
-    QString name = QString("%1_%2.%3").arg(base).arg(uuid).arg(ext);
+    //QString uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    // QString name = QString("%1_%2.%3").arg(base).arg(uuid).arg(ext);
+    QString name = QString("%1.%2").arg(base).arg(ext);
     return dir.filePath(name);
 }
 void cam::save_pic(int id, const QImage &preview)
@@ -274,7 +275,7 @@ void cam::on_comboBox_currentIndexChanged(int index)
 
     qDebug() << "Camera resolution changed to" << desired;
 
-    timer->start(600);
+    // timer->start(600);
 
 }
 

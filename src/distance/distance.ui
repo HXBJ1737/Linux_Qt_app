@@ -1,0 +1,933 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>distance</class>
+ <widget class="QWidget" name="distance">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(0, 0, 0);</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>640</width>
+     <height>480</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="back_btn">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>20</y>
+     <width>141</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(148, 0, 0);
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>返回</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_res">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>500</y>
+     <width>271</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>占用</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>20</y>
+     <width>121</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>640*480</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>960*720</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>1280*960</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>1920*1440</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>2592*1944</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>30</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>输入分辨率</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_2">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>100</y>
+     <width>111</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>bottle</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Person</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cell phone</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>bicycle</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>car</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>110</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>设置  目标</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>260</y>
+     <width>161</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>目标先验尺寸(mm)</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_1">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>260</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(13, 43, 37);
+border-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>100</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_dis">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>530</y>
+     <width>231</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>19</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>当前距离: 1.234m</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="back_btn_2">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>610</y>
+     <width>141</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(0, 153, 0) ;
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>开始测量</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="back_btn_3">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>520</y>
+     <width>141</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(148, 0, 0);
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>结束</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_fps">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>480</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="whatsThis">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>0FPS</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_info">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>500</y>
+     <width>331</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>INFO</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="flip_btn">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>460</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(170, 0, 0) ;
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>校正</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_f">
+   <property name="geometry">
+    <rect>
+     <x>780</x>
+     <y>460</y>
+     <width>181</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>像素焦距：600px</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>200</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>校正距离</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_3">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>190</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>17</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>600mm</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>800mm</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>1000mm</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>5000mm</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>300mm</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>150mm</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>320</y>
+     <width>161</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>相机高度(mm)</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_2">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>320</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(13, 43, 37);
+border-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>65</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_4">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>380</y>
+     <width>111</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>目标先验</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>相机先验</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>390</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>测距方法：</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="usage_btn">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>120</y>
+     <width>141</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(16, 124, 255) ;
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>使用方法</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>970</x>
+     <y>40</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>CPU频率</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_5">
+   <property name="geometry">
+    <rect>
+     <x>960</x>
+     <y>110</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>1800000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>1608000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>1416000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>1104000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>816000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>600000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>408000</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>970</x>
+     <y>200</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>NPU频率</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_6">
+   <property name="geometry">
+    <rect>
+     <x>960</x>
+     <y>260</y>
+     <width>121</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>900000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>800000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>700000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>600000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>400000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>297000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>200000000</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>970</x>
+     <y>330</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>GPU频率</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_7">
+   <property name="geometry">
+    <rect>
+     <x>960</x>
+     <y>380</y>
+     <width>121</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>800000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>700000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>600000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>400000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>300000000</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>200000000</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="scrshotBtn">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>420</y>
+     <width>141</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(0, 170, 255);
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>截屏</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="zBtn">
+   <property name="geometry">
+    <rect>
+     <x>1119</x>
+     <y>212</y>
+     <width>141</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(28, 43, 95);
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>使用标定焦距</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="xBtn">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>310</y>
+     <width>141</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(28, 43, 95);
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>使用校正焦距</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="show1Btn">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>540</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(16, 124, 255) ;
+color: rgb(255, 255, 255);
+border-radius: 20px;
+</string>
+   </property>
+   <property name="text">
+    <string>显示辅助线</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_dis_2">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>600</y>
+     <width>231</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>19</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>平均距离: 1.234m</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="filterBtn">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>620</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(0, 153, 0) ;
+color: rgb(255, 255, 255);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string>开始滤波</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

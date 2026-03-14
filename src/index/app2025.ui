@@ -117,7 +117,7 @@ color: rgb(255, 255, 255);</string>
      </layout>
     </item>
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0" columnstretch="0,0,0,0,0,0,0,0,0,0,0" rowminimumheight="1,0,0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0" columnstretch="0,0,0,0,0,0,0,0,0,0,0,0" rowminimumheight="1,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
@@ -127,8 +127,8 @@ color: rgb(255, 255, 255);</string>
       <property name="rightMargin">
        <number>0</number>
       </property>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="app3_btn">
+      <item row="0" column="11">
+       <widget class="QPushButton" name="close_btn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>1</horstretch>
@@ -150,34 +150,12 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Microsoft YaHei UI</family>
-          <pointsize>16</pointsize>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(0, 0, 0);
-background-color: rgb(151, 255, 194);
-border-radius: 10px;
-min-width: 100px;
-min-height: 100px;
-max-width: 100px;
-max-height: 100px;</string>
-        </property>
-        <property name="text">
-         <string>正点原子
-APP</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QPushButton" name="poweroff_pushButton">
-        <property name="font">
-         <font>
           <pointsize>14</pointsize>
          </font>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(0, 0, 0);
-background-color: rgb(255, 94, 88);
+background-color: rgb(255, 0, 0);
 border-radius: 10px;
 min-width: 100px;
 min-height: 100px;
@@ -185,7 +163,7 @@ max-width: 100px;
 max-height: 100px;</string>
         </property>
         <property name="text">
-         <string>关机</string>
+         <string>退出</string>
         </property>
        </widget>
       </item>
@@ -242,75 +220,24 @@ max-height: 100px;
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="app2_btn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>1</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>140</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>140</height>
-         </size>
-        </property>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="poweroff_pushButton">
         <property name="font">
          <font>
-          <family>Microsoft YaHei UI</family>
-          <pointsize>18</pointsize>
+          <pointsize>14</pointsize>
          </font>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(0, 0, 0);
-background-color: rgb(29, 244, 255);
+background-color: rgb(255, 94, 88);
 border-radius: 10px;
 min-width: 100px;
 min-height: 100px;
 max-width: 100px;
-max-height: 100px;
-</string>
+max-height: 100px;</string>
         </property>
         <property name="text">
-         <string>相册</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="test_pushButton">
-        <property name="styleSheet">
-         <string notr="true">color: rgb(0, 0, 0);
-background-color: rgb(47, 255, 89);
-border-radius: 10px;
-min-width: 100px;
-min-height: 100px;
-max-width: 100px;
-max-height: 100px;
-
-</string>
-        </property>
-        <property name="text">
-         <string>test</string>
+         <string>关机</string>
         </property>
        </widget>
       </item>
@@ -355,7 +282,20 @@ max-height: 100px;
         </property>
        </widget>
       </item>
-      <item row="0" column="9">
+      <item row="0" column="5">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="10">
        <widget class="QPushButton" name="reboot_pushButton">
         <property name="font">
          <font>
@@ -377,8 +317,8 @@ max-height: 100px;
         </property>
        </widget>
       </item>
-      <item row="0" column="10">
-       <widget class="QPushButton" name="close_btn">
+      <item row="0" column="3">
+       <widget class="QPushButton" name="app3_btn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>1</horstretch>
@@ -400,12 +340,12 @@ max-height: 100px;
         <property name="font">
          <font>
           <family>Microsoft YaHei UI</family>
-          <pointsize>14</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(0, 0, 0);
-background-color: rgb(255, 0, 0);
+background-color: rgb(151, 255, 194);
 border-radius: 10px;
 min-width: 100px;
 min-height: 100px;
@@ -413,7 +353,88 @@ max-width: 100px;
 max-height: 100px;</string>
         </property>
         <property name="text">
-         <string>退出</string>
+         <string>正点原子
+APP</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="app2_btn">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>140</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>140</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Microsoft YaHei UI</family>
+          <pointsize>18</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(29, 244, 255);
+border-radius: 10px;
+min-width: 100px;
+min-height: 100px;
+max-width: 100px;
+max-height: 100px;
+</string>
+        </property>
+        <property name="text">
+         <string>相册</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="test_pushButton">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(47, 255, 89);
+border-radius: 10px;
+min-width: 100px;
+min-height: 100px;
+max-width: 100px;
+max-height: 100px;
+
+</string>
+        </property>
+        <property name="text">
+         <string>test</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="pushButton">
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(151, 255, 194);
+border-radius: 10px;
+min-width: 100px;
+min-height: 100px;
+max-width: 100px;
+max-height: 100px;</string>
+        </property>
+        <property name="text">
+         <string>测距</string>
         </property>
        </widget>
       </item>

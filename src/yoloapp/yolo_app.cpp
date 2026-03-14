@@ -1,3 +1,4 @@
+#ifdef __aarch64__
 #include "yolo_app.h"
 #include "ui_yolo_app.h"
 
@@ -7,7 +8,7 @@ yolo_app::yolo_app(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
 
-#ifdef __aarch64__
+
     const char *model_path = "/hxbj/model/yolo11_relu.rknn";
     int ret;
 
@@ -61,14 +62,11 @@ yolo_app::yolo_app(QWidget *parent)
     {
         qDebug() << "QVideoProbe setSource failed";
     }
-#else
-    QMessageBox::warning(this, tr("初始化失败"), tr("此应用仅可在__aarch64__上运行"));
-#endif
+
 }
 
 yolo_app::~yolo_app()
 {
-#ifdef __aarch64__
     deinit_post_process();
 
     int ret = release_yolo11_model(&rknn_app_ctx);
@@ -76,13 +74,11 @@ yolo_app::~yolo_app()
     {
         printf("release_yolo11_model fail! ret=%d\n", ret);
     }
-#endif
     delete ui;
 }
 
 void yolo_app::on_back_btn_clicked()
 {
-#ifdef __aarch64__
     // 先断开并删除 probe，避免在释放 camera 时还触发回调
     if (probe)
     {
@@ -114,11 +110,9 @@ void yolo_app::on_back_btn_clicked()
     {
         qDebug() << "release_yolo11_model fail! ret=" << ret;
     }
-#endif
 
     this->close();
 }
-#ifdef __aarch64__
 void yolo_app::processFrame(const QVideoFrame &frame)
 {
     static int fpsFrameCount = 0;
@@ -152,7 +146,7 @@ void yolo_app::processFrame(const QVideoFrame &frame)
     {
         return;
     }
-
+    rotateNV12Frame180(&src);
     // 推理
     object_detect_result_list od_results;
     memset(&od_results, 0, sizeof(od_results));
@@ -316,10 +310,37 @@ bool yolo_app::convertNV12ToImageBufferSimple(QVideoFrame &frame, image_buffer_t
     frame.unmap();
     return true;
 }
+void yolo_app::rotateNV12Frame180(image_buffer_t *image_buf)
+{
+    if (!image_buf || !image_buf->virt_addr || image_buf->width <= 0 || image_buf->height <= 0)
+    {
+        return;
+    }
 
+    const int width = image_buf->width;
+    const int height = image_buf->height;
+    unsigned char *yPlane = image_buf->virt_addr;
+    const int uvPlaneOffset = image_buf->width_stride * image_buf->height_stride;
+    const int uvPlaneSize = width * height / 2;
+    if (uvPlaneOffset + uvPlaneSize > image_buf->size)
+    {
+        return;
+    }
+    unsigned char *uvPlane = image_buf->virt_addr + uvPlaneOffset;
+
+    cv::Mat yMat(height, width, CV_8UC1, yPlane);
+    cv::flip(yMat, yMat, -1);
+
+    if (width % 2 != 0 || height % 2 != 0)
+    {
+        return;
+    }
+
+    cv::Mat uvMat(height / 2, width / 2, CV_8UC2, uvPlane);
+    cv::flip(uvMat, uvMat, -1);
+}
 void yolo_app::on_comboBox_currentIndexChanged(int index)
 {
-#ifdef __linux__
     if (!myCamera)
         return;
 
@@ -345,7 +366,7 @@ void yolo_app::on_comboBox_currentIndexChanged(int index)
     myCamera->start();
 
     qDebug() << "Camera resolution changed to" << desired;
-#endif
+
 }
 
 #endif

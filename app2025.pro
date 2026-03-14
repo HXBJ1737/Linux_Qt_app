@@ -1,4 +1,4 @@
-QT += core gui widgets multimedia multimediawidgets 
+QT += core gui widgets multimedia multimediawidgets virtualkeyboard
 
 CONFIG += c++17
 win32-msvc*:QMAKE_CXXFLAGS += /utf-8
@@ -9,7 +9,7 @@ SOURCES += \
     src/cam/cam.cpp \
     src/gallery/gallery.cpp \
     src/test/test.cpp \
-    src/yoloapp/yolo_app.cpp \
+    
     
 
 HEADERS += \
@@ -17,10 +17,12 @@ HEADERS += \
     src/cam/cam.h \
     src/gallery/gallery.h \
     src/test/test.h \
-    src/yoloapp/yolo_app.h \
+    
    
 
 FORMS +=  \
+    src/distance/distance.ui \
+    src/distance/usage.ui \
     src/index/app2025.ui \
     src/cam/cam.ui \
     src/gallery/gallery.ui \
@@ -46,14 +48,20 @@ SOURCES += \
     yolo11/cpp/postprocess.cc \
     yolo11/utils/image_utils.c \
     yolo11/utils/file_utils.c \
-    yolo11/utils/image_drawing.c
+    yolo11/utils/image_drawing.c \
+    src/distance/distance.cpp \
+    src/yoloapp/yolo_app.cpp \
+    src/distance/usage.cpp \
 
 HEADERS += \
     yolo11/cpp/postprocess.h \
     yolo11/cpp/yolo11.h \
     yolo11/utils/image_utils.h \
     yolo11/utils/file_utils.h \
-    yolo11/utils/image_drawing.h
+    yolo11/utils/image_drawing.h \
+    src/distance/distance.h \
+    src/yoloapp/yolo_app.h \
+    src/distance/usage.h \
 
    
 INCLUDEPATH += \
