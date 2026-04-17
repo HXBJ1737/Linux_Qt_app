@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QFileInfo>
+#include <QDateTime>
 #include "src/cam/cam.h"
 #include <QImageReader>
 extern bool cam_ui_open;
@@ -43,13 +44,22 @@ gallery::gallery(QWidget *parent)
             if (!seen.contains(abs))
             {
                 seen.insert(abs);
-                imageFiles.append(abs); 
+                imageFiles.append(abs);
             }
         }
     }
-    // 可选按文件名排序（如果需要按目录顺序可调整）
+    // 按修改时间倒序排列，最新图片优先
     std::sort(imageFiles.begin(), imageFiles.end(), [](const QString &a, const QString &b)
-              { return QFileInfo(a).fileName().toLower() < QFileInfo(b).fileName().toLower(); });
+              {
+                  const QFileInfo infoA(a);
+                  const QFileInfo infoB(b);
+                  const QDateTime timeA = infoA.lastModified();
+                  const QDateTime timeB = infoB.lastModified();
+                  if (timeA == timeB)
+                  {
+                      return infoA.fileName().toLower() > infoB.fileName().toLower();
+                  }
+                  return timeA > timeB; });
 
     maxIndex = imageFiles.count() - 1;
     currentIndex = -1;
@@ -78,8 +88,8 @@ gallery::gallery(QWidget *parent)
         pathLabel->setMargin(6);
         pathLabel->setVisible(ui->radioButton->isChecked());
         // 加载并显示图片（封装的函数会同时更新 pathLabel）
-        // 初始显示最后一张
-        currentIndex = maxIndex;
+        // 初始显示最新一张
+        currentIndex = 0;
         QString filePath = imageFiles.at(currentIndex);
         showImage(filePath);
     }
@@ -229,7 +239,16 @@ void gallery::on_rm_Btn_clicked()
         }
     }
     std::sort(imageFiles.begin(), imageFiles.end(), [](const QString &a, const QString &b)
-              { return QFileInfo(a).fileName().toLower() < QFileInfo(b).fileName().toLower(); });
+              {
+                  const QFileInfo infoA(a);
+                  const QFileInfo infoB(b);
+                  const QDateTime timeA = infoA.lastModified();
+                  const QDateTime timeB = infoB.lastModified();
+                  if (timeA == timeB)
+                  {
+                      return infoA.fileName().toLower() > infoB.fileName().toLower();
+                  }
+                  return timeA > timeB; });
     maxIndex = imageFiles.count() - 1;
 
     if (maxIndex > -1)

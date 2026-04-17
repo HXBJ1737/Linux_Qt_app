@@ -1,7 +1,7 @@
 
 #ifndef DISTANCE_H
 #define DISTANCE_H
-// #ifdef __aarch64__
+#ifdef __aarch64__
 #include <QtGlobal>
 #include <QWidget>
 #include <QMainWindow>
@@ -184,4 +184,6 @@ private:
     static constexpr int kFilterSampleCount = 100;
     double filteredDistanceMeters = 0.0;
 };
+#endif
+
 #endif

@@ -8,7 +8,9 @@
 #include <QCameraViewfinderSettings>
 #include <QImageEncoderSettings>
 #include <QMultimedia>
-#include <QVideoWidget>
+#include <QGraphicsVideoItem>
+#include <QGraphicsView>
+#include <QGraphicsScene>
 #include <QDateTime>
 #include <QUuid>
 #include <QTimer>
@@ -23,6 +25,12 @@
 #include <QVideoProbe>
 #include <QElapsedTimer>
 #include <QVideoFrame>
+#include <QResizeEvent>
+#include <QFrame>
+#include <QPointF>
+#include <QRectF>
+#include <QBrush>
+#include <QTransform>
 class cam : public QMainWindow
 {
     Q_OBJECT
@@ -49,20 +57,31 @@ private slots:
 
     void onVideoFrameProbed(const QVideoFrame &frame);
 
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
     Ui_cam *ui;
     QTimer *timer;
     QList<QCameraInfo> cameraList; // 相机列表
     QCamera *myCamera;             // 相机
     QCameraImageCapture *cp;       // 抓拍部件
-    QVideoWidget *w;
     QVideoProbe *videoProbe = nullptr;
     QElapsedTimer fpsTimer;
     int fpsFrameCount = 0;
     double currentFps = 0.0;
 
+    QGraphicsView *videoView = nullptr;
+    QGraphicsScene *videoScene = nullptr;
+    QGraphicsVideoItem *videoItem = nullptr;
+    bool rotateViewfinder180 = false;
+
+    void initCameraViewfinder();
+    void updateViewfinderGeometry();
+    void applyCameraRotation(bool rotate180Degrees);
+
     int default_index = 0;
     int maxIndex;
+
 protected:
     void mousePressEvent(QMouseEvent *event);
 };

@@ -20,7 +20,6 @@ cam::cam(QWidget *parent)
     QString projectRoot = ba.isEmpty() ? QString() : QString::fromUtf8(ba);
     QDir::setCurrent(projectRoot);
 
-   
     QDir imgDir("./img");
     if (!imgDir.exists())
         imgDir.mkpath(".");
@@ -94,19 +93,14 @@ cam::cam(QWidget *parent)
     QCameraViewfinderSettings set;
     myCamera->setViewfinderSettings(set);
 
-    w = new QVideoWidget(ui->widget);
-    w->resize(ui->widget->size());
-    myCamera->stop();
-    myCamera->setViewfinder(w);
+    initCameraViewfinder();
+    applyCameraRotation(true);
     myCamera->start();
-    w->show();
-
 
     // timer = new QTimer(this);
     // connect(timer, &QTimer::timeout, this, &cam::onTimeout);
     // timer->setSingleShot(true);
     // timer->start(600);
-
 }
 void cam::onVideoFrameProbed(const QVideoFrame &frame)
 {
@@ -126,15 +120,15 @@ void cam::onVideoFrameProbed(const QVideoFrame &frame)
 }
 void cam::onTimeout()
 {
-// #ifdef __aarch64__
-//     touch_simulate(0, 0);
-//     touch_simulate(0, 1);
-// #else
-//     qDebug() << "onTimeout called on non-aarch64 platform";
-// #endif
+    // #ifdef __aarch64__
+    //     touch_simulate(0, 0);
+    //     touch_simulate(0, 1);
+    // #else
+    //     qDebug() << "onTimeout called on non-aarch64 platform";
+    // #endif
 }
 cam::~cam()
-{ 
+{
     if (videoProbe)
     {
         videoProbe->disconnect(); /* parent will delete */
@@ -152,13 +146,16 @@ static QString makeUniqueImagePath(const QString &dirPath, const QString &ext = 
 
     // 时间戳 + UUID 保证唯一性（不依赖索引）
     QString base = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss_zzz");
-    //QString uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
-    // QString name = QString("%1_%2.%3").arg(base).arg(uuid).arg(ext);
+    // QString uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    //  QString name = QString("%1_%2.%3").arg(base).arg(uuid).arg(ext);
     QString name = QString("%1.%2").arg(base).arg(ext);
     return dir.filePath(name);
 }
 void cam::save_pic(int id, const QImage &preview)
 {
+    QTransform rotation;
+    rotation.rotate(180);
+    const QImage rotatedPreview = preview.transformed(rotation, Qt::SmoothTransformation);
 
     // 保存目录与格式（可改为从设置中读取）
     const QString dirPath = QStringLiteral("./img");
@@ -169,7 +166,7 @@ void cam::save_pic(int id, const QImage &preview)
     QString tmp = target + ".tmp";
 
     // 保存到临时文件（指定格式）
-    bool ok = preview.save(tmp, ext.toUtf8().constData());
+    bool ok = rotatedPreview.save(tmp, ext.toUtf8().constData());
     if (!ok)
     {
         qWarning() << "保存临时图片失败：" << tmp;
@@ -190,7 +187,7 @@ void cam::save_pic(int id, const QImage &preview)
     qDebug() << id << "saved to" << target;
 
     // 更新缩略按钮图标（使用缩放的 pixmap）
-    QPixmap mmp = QPixmap::fromImage(preview);
+    QPixmap mmp = QPixmap::fromImage(rotatedPreview);
     mmp = mmp.scaled(ui->picbtn->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     ui->picbtn->setIcon(QIcon(mmp));
 }
@@ -202,11 +199,13 @@ void cam::on_screenshotbtn_clicked()
 
 void cam::on_camBackBtn_clicked()
 {
-    myCamera->stop();
-    w->close();
-    delete myCamera;
-    delete cp;
-    delete w;
+    if (myCamera)
+    {
+        myCamera->stop();
+        delete myCamera;
+        myCamera = nullptr;
+        cp = nullptr;
+    }
     this->close();
 }
 
@@ -215,11 +214,13 @@ void cam::on_picbtn_clicked()
     gallery *g = new gallery();
     g->show();
     cam_ui_open = true;
-    myCamera->stop();
-    w->close();
-    delete myCamera;
-    delete cp;
-    delete w;
+    if (myCamera)
+    {
+        myCamera->stop();
+        delete myCamera;
+        myCamera = nullptr;
+        cp = nullptr;
+    }
     this->close();
 }
 
@@ -259,7 +260,10 @@ void cam::on_comboBox_currentIndexChanged(int index)
     bool wasActive = (myCamera->state() == QCamera::ActiveState);
     myCamera->stop();
     myCamera->setViewfinderSettings(viewSet);
-    myCamera->setViewfinder(w); // 保持输出窗口
+    if (videoItem)
+    {
+        myCamera->setViewfinder(videoItem);
+    }
     if (wasActive)
         myCamera->start();
 
@@ -276,11 +280,72 @@ void cam::on_comboBox_currentIndexChanged(int index)
     qDebug() << "Camera resolution changed to" << desired;
 
     // timer->start(600);
-
 }
 
 void cam::mousePressEvent(QMouseEvent *event)
 {
     auto pos = event->pos(); // 获得鼠标点击的位置
     qDebug() << pos;
+}
+
+void cam::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    updateViewfinderGeometry();
+}
+
+void cam::initCameraViewfinder()
+{
+    if (!ui || !ui->widget || videoItem)
+        return;
+
+    videoScene = new QGraphicsScene(this);
+    videoScene->setBackgroundBrush(Qt::black);
+
+    videoView = new QGraphicsView(videoScene, ui->widget);
+    videoView->setFrameShape(QFrame::NoFrame);
+    videoView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    videoView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    videoView->setAlignment(Qt::AlignCenter);
+    videoView->setStyleSheet("background-color: black; border: 0px;");
+    videoView->setGeometry(ui->widget->rect());
+    videoView->show();
+
+    videoItem = new QGraphicsVideoItem();
+    videoScene->addItem(videoItem);
+    videoItem->setPos(0, 0);
+
+    updateViewfinderGeometry();
+
+    if (myCamera)
+    {
+        myCamera->setViewfinder(videoItem);
+    }
+}
+
+void cam::updateViewfinderGeometry()
+{
+    if (!ui || !ui->widget || !videoView || !videoScene || !videoItem)
+        return;
+
+    const QRect widgetRect = ui->widget->rect();
+    videoView->setGeometry(widgetRect);
+
+    const QRectF sceneRect(QPointF(0, 0), widgetRect.size());
+    videoScene->setSceneRect(sceneRect);
+    videoItem->setSize(sceneRect.size());
+    videoItem->setPos(sceneRect.topLeft());
+
+    applyCameraRotation(rotateViewfinder180);
+}
+
+void cam::applyCameraRotation(bool rotate180Degrees)
+{
+    rotateViewfinder180 = rotate180Degrees;
+    if (!videoItem)
+        return;
+
+    const QRectF bounds = videoItem->boundingRect();
+    videoItem->setTransformOriginPoint(bounds.center());
+    videoItem->setRotation(rotate180Degrees ? 180.0 : 0.0);
 }
